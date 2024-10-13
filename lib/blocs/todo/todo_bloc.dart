@@ -13,6 +13,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<AddTodo>(_onAddTodo);
     on<UpdateTodo>(_onUpdateTodo);
     on<DeleteTodo>(_onDeleteTodo);
+    on<DeleteMultipleTodos>(_onDeleteMultipleTodos);
   }
 
   Future<void> _onLoadTodos(LoadTodos event, Emitter<TodoState> emit) async {
@@ -57,6 +58,21 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         emit(TodosLoaded(todos));
       } catch (e) {
         emit(TodosError('Erro ao deletar tarefa'));
+      }
+    }
+  }
+
+  Future<void> _onDeleteMultipleTodos(
+      DeleteMultipleTodos event, Emitter<TodoState> emit) async {
+    if (state is TodosLoaded) {
+      try {
+        for (var id in event.ids) {
+          await _todoRepository.deleteTodo(id);
+        }
+        final todos = await _todoRepository.getTodos();
+        emit(TodosLoaded(todos));
+      } catch (e) {
+        emit(TodosError('Erro ao deletar tarefas selecionadas'));
       }
     }
   }

@@ -34,3 +34,12 @@ class DeleteTodo extends TodoEvent {
   @override
   List<Object?> get props => [id];
 }
+
+class DeleteMultipleTodos extends TodoEvent {
+  final List<int> ids;
+
+  DeleteMultipleTodos(this.ids);
+
+  @override
+  List<Object?> get props => [ids];
+}
